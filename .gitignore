@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Env
+.env
+*.env
+venv/
+env/
+ENV/
+
+# Database (SQLite hoặc dump file)
+*.sqlite3
+*.db
+*.sql
+
+# Media (ảnh upload từ người dùng)
+/media/truong/01DBB45ECE0C4E00/django/Student_Management/students
+
+# Static files collected
+staticfiles/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# System
+.DS_Store
+Thumbs.db
