@@ -1,6 +1,6 @@
 
 from pyexpat.errors import messages
-from http.client import HTTPResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 # Create your views here.
@@ -73,8 +73,8 @@ def add_student(request):
             student_image=student_image,
             parent=parent
         )
-        messages.success(request, "Student added Successfully")
-
+        # messages.success(request, "Student added Successfully")
+        return redirect('student-list')
     return render(request, "students/add-student.html")
 
 def edit_student(request, slug):
@@ -119,21 +119,18 @@ def edit_student(request, slug):
         student.section = section
         student.student_image = student_image
         student.save()
-        # context = {
-        #     'student': student,
-        #     'parent': parent
-        # }
 
+        # messages.success(request, "Student add Successfully")
+        return redirect("student-list")
         # create_notification(request.user, f"Added Student: {student.first_name} {student.last_name}")
-
-        return redirect("student_list")
-    return render(request, "students/edit-student.html")
+    return render(request, "students/edit-student.html", {"student": student,"parent": parent})
 
     return render(request, "students/edit-student.html")
 
 def delete_student(request, slug):
     if request.method == "POST":
         student = get_object_or_404(Student, slug=slug)
+        student_name = f"{student.first_name} {student.last_name}"
         student.delete()
-        return redirect ('student_list')
+        return redirect ("student-list")
     return HttpResponseForbidden()

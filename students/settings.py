@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'students',
     'student',
-    'school'
+    'school',
+    'home_auth'
 ]
 
 MIDDLEWARE = [
@@ -77,8 +78,12 @@ WSGI_APPLICATION = 'students.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DJANGO_DB_NAME', 'studentdb'),
+        'USER': os.getenv('DJANGO_DB_USER', 'studentuser'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'studentpass'),
+        'HOST': os.getenv('DJANGO_DB_HOST', 'db'),
+        'PORT': '5432',
     }
 }
 

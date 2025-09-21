@@ -52,3 +52,10 @@ urllib3==2.4.0
 wcwidth==0.2.13
 webencodings==0.5.1
 yarg==0.1.9
+psycopg2-binary>=2.9
+Django>=4.2
+Pillow>=10.0.0
+# PostgreSQL driver (phiên bản mới thay thế psycopg2)
+psycopg[binary]>=3.1,<4.0
+# Cho môi trường phát triển
+python-dotenv>=1.0.0
