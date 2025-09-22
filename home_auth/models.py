@@ -20,3 +20,11 @@ class CustomUser(AbstractUser):
         related_name = True,
         blank = True
     )
+    user_permission = models.ManyToManyField(
+        'auth.Permission',
+        related_name = None,
+        blank = True
+    )
+
+    def __str(self):
+        return self.username

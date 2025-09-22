@@ -18,7 +18,7 @@ ENV/
 *.sql
 
 # Media (ảnh upload từ người dùng)
-students/media/*.png
+students/*.png
 
 # Static files collected
 staticfiles/
