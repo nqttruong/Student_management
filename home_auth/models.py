@@ -1,6 +1,6 @@
 from django.db import models
 from typing_extensions import AbstractUser
-
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -28,3 +28,9 @@ class CustomUser(AbstractUser):
 
     def __str(self):
         return self.username
+
+class PasswordResetRequest(models.Model):
+    user = models.Foreignkey('CustomUser', on_delete=models.CASCADE)
+    email = models.EmailField()
+    token = models.CharField(max_length=32, default=get_random_string(32), editable=False, unique=True)
+    create_at = models.DateTimeField(auto_now_add=True)
