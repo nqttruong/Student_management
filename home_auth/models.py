@@ -33,4 +33,4 @@ class PasswordResetRequest(models.Model):
     user = models.Foreignkey('CustomUser', on_delete=models.CASCADE)
     email = models.EmailField()
     token = models.CharField(max_length=32, default=get_random_string(32), editable=False, unique=True)
-    create_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
