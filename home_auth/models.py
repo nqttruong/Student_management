@@ -1,6 +1,10 @@
 from django.db import models
-from typing_extensions import AbstractUser
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
+from django.conf import settings
+import uuid
+from django.utils.crypto import get_random_string
+from django.utils import timezone
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -17,7 +21,7 @@ class CustomUser(AbstractUser):
 
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name = True,
+        related_name = None,
         blank = True
     )
     user_permission = models.ManyToManyField(
@@ -29,8 +33,30 @@ class CustomUser(AbstractUser):
     def __str(self):
         return self.username
 
+
+# lưu thông tin về các yêu cầu reset mật khẩu của người dùng.
 class PasswordResetRequest(models.Model):
-    user = models.Foreignkey('CustomUser', on_delete=models.CASCADE)
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    # on_delete = models.CASCADE: nếu user bị xóa → bản ghi reset password này cũng bị xóa theo.
     email = models.EmailField()
     token = models.CharField(max_length=32, default=get_random_string(32), editable=False, unique=True)
+    # token: chuỗi ngẫu nhiên dài 32 ký tự → dùng để xác định yêu cầu reset mật khẩu.
+    # default=get_random_string(32): mỗi bản ghi tạo ra sẽ có sẵn 1 token random.
+    # editable=False: không cho chỉnh sửa trong admin.
+    # unique=True: đảm bảo không có 2 token trùng nhau trong DB.
+    
     created_at = models.DateTimeField(auto_now_add=True)
+    TOKEN_VALIDITY_PERIOD = timezone.timedelta(hours=1)
+     
+    def is_valid(self):
+        return timezone.now() <= self.created_at + self.TOKEN_VALIDITY_PERIOD
+
+    def send_reset_email(self):
+        reset_link = f"http://localhost:8000/authentication/reset-password/{self.token}/"
+        send_mail(
+            'Password Reset Request',
+            f'Click the following link to reset your password: {reset_link}',
+            settings.DEFAULT_FROM_EMAIL,
+            [self.email],
+            fail_silently=False,
+        )
