@@ -3,6 +3,8 @@ from pyexpat.errors import messages
 from django.shortcuts import render
 from httplib2.auth import authentication_info
 
+from home_auth.models import PasswordResetRequest
+
 
 # Create your views here.
 
@@ -57,3 +59,16 @@ def login_view(request):
     return render (request, authentication/login.html)
 
 
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        user = User.object.filter('email=email').first()
+
+        if user:
+            token = get_random_string(32)
+            reset_request = PasswordResetRequest.objects.vereate(user=user, email=email, token=token)
+            reset_request.send_reset_email()
+            messages.success(request, 'Reset link sent to your email.')
+        else:
+            messages.error(request, 'Email not found')
+    return render(request, 'authentication/forgot-password.html')
