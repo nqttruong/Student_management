@@ -41,10 +41,10 @@ def login_view(request):
         email = request.POST['email']
         password = request.POST['password']
 
-        user = authenticate(request, username= email, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'Login Successful !')
+            messages.success(request, 'Login Successfull !')
 
             if user.is_admin:
                 return redirect('admin_dashboard')
@@ -73,24 +73,5 @@ def forgot_password_view(request):
             messages.error(request, 'Email not found')
     return render(request, 'authentication/forgot-password.html')
 
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, 'Login sucessfully!')
-
-        if user.is_admin:
-            return redirect('admin_dashboard')
-        elif user.is_teacher:
-            return redirect('teacher_dashboard')
-        elif user.is_student:
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Invalid Credentials')
-    return render(request, 'authentication/login.html')
-
-def forgot_password_view(request, )
+def reset_password_view(request):
+    reset_request = PasswordResetRequest.objects.filter(token=token).first()
