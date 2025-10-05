@@ -1,10 +1,10 @@
 from pyexpat.errors import messages
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from httplib2.auth import authentication_info
-
+from django.contrib.auth import authenticate, login, logout
 from home_auth.models import PasswordResetRequest
-
+from django.utils.crypto import get_random_string
 
 # Create your views here.
 
@@ -72,3 +72,25 @@ def forgot_password_view(request):
         else:
             messages.error(request, 'Email not found')
     return render(request, 'authentication/forgot-password.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login sucessfully!')
+
+        if user.is_admin:
+            return redirect('admin_dashboard')
+        elif user.is_teacher:
+            return redirect('teacher_dashboard')
+        elif user.is_student:
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid Credentials')
+    return render(request, 'authentication/login.html')
+
+def forgot_password_view(request, )
