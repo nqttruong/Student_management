@@ -75,3 +75,20 @@ def forgot_password_view(request):
 
 def reset_password_view(request):
     reset_request = PasswordResetRequest.objects.filter(token=token).first()
+
+    if not reset_request or not reset_request.is_valid():
+        messages.error(request, "Invalid or expired reset link")
+        return redirect('index')
+
+    if request.method == 'POST':
+        new_password = request.POST['new_password']
+        reset_request.user.set_password(new_password)
+        reset_request.uset.save()
+        messages.success(request, 'Password reset successfull')
+        return redirect('login')
+    return render(request, 'reset_password.html', {'token: token'})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('index')
